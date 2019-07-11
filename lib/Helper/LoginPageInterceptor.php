@@ -63,24 +63,36 @@ class LoginPageInterceptor {
 
 			header(sprintf("Content-Security-Policy: script-src 'nonce-%s'", $nonce));
 
+			$logoutConfirmationUrl = $this->urlGenerator->generateLogoutConfirmationUrl();
+
 			// This is the actual clearing logic found in Nextcloud's `login.js`,
 			// followed by a JS-based redirect to the Identity Provider's logged-out-confirmation page.
 			$html = sprintf(
 				'
-				<script nonce="%s">
-					try {
-						window.localStorage.clear();
-						window.sessionStorage.clear();
-						console.debug("Browser storage cleared");
-					} catch (e) {
-						console.error("Could not clear browser storage", e);
-					}
+				<!doctype html>
+				<html>
+					<head>
+						<script nonce="%s">
+							try {
+								window.localStorage.clear();
+								window.sessionStorage.clear();
+								console.debug("Browser storage cleared");
+							} catch (e) {
+								console.error("Could not clear browser storage", e);
+							}
 
-					window.location.href = %s;
-				</script>
+							window.location.href = %s;
+						</script>
+					</head>
+
+					<body>
+						<p>Redirecting you to: %s</p>
+					</body>
+				</html>
 				',
 				$nonce,
-				json_encode($this->urlGenerator->generateLogoutConfirmationUrl())
+				json_encode($logoutConfirmationUrl),
+				$logoutConfirmationUrl,
 			);
 
 			echo $html;
