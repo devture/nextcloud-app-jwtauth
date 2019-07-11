@@ -59,11 +59,15 @@ class LoginPageInterceptor {
 			// Remove the marker to prevent `ReloadExecutionMiddleware` from kicking in later.
 			$this->session->getSession()->remove('clearingExecutionContexts');
 
+			$nonce = bin2hex(openssl_random_pseudo_bytes(64));
+
+			header(sprintf("Content-Security-Policy: script-src 'nonce-%s'", $nonce));
+
 			// This is the actual clearing logic found in Nextcloud's `login.js`,
 			// followed by a JS-based redirect to the Identity Provider's logged-out-confirmation page.
 			$html = sprintf(
 				'
-				<script>
+				<script nonce="%s">
 					try {
 						window.localStorage.clear();
 						window.sessionStorage.clear();
@@ -75,6 +79,7 @@ class LoginPageInterceptor {
 					window.location.href = %s;
 				</script>
 				',
+				$nonce,
 				json_encode($this->urlGenerator->generateLogoutConfirmationUrl())
 			);
 
