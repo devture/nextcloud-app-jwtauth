@@ -1,6 +1,6 @@
 # Nextcloud JWT Auth app
 
-A [Nextcloud](https://nextcloud.com/) (v17+) application which lets you auto-login users ([single-sign-on](https://en.wikipedia.org/wiki/Single_sign-on)) without them having to go through the Nextlcoud login page.
+A [Nextcloud](https://nextcloud.com/) (v17+) application which lets you auto-login users ([single-sign-on](https://en.wikipedia.org/wiki/Single_sign-on)) without them having to go through the Nextcloud login page.
 
 To make use of this app, you need another system which generates temporary [JWT](https://jwt.io/) tokens, serving as a login identifier.
 The JWT Auth Nextcloud application securely processes these tokens and transparently logs the user into Nextcloud.
