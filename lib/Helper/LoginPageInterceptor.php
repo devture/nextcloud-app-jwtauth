@@ -30,6 +30,11 @@ class LoginPageInterceptor {
 	}
 
 	public function intercept(): void {
+		if (php_sapi_name() === 'cli') {
+			// Ignore command-line requests (console commands, etc.).
+			return;
+		}
+
 		$requestUri = $_SERVER['REQUEST_URI'];
 
 		if (strpos($requestUri, '/login') !== 0) {
